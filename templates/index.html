@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Movie Review Sentiment Analysis</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 50px;
+    }
+    h1 {
+      color: #333;
+    }
+    textarea {
+      width: 400px;
+      height: 150px;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      resize: none;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #007BFF;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .result {
+      margin-top: 30px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Movie Review Sentiment Analysis</h1>
+  <textarea id="reviewText" placeholder="Enter your movie review here..."></textarea>
+  <br />
+  <button onclick="analyzeSentiment()">Analyze Sentiment</button>
+  <div class="result" id="result"></div>
+
+  <script>
+    async function analyzeSentiment() {
+      const review = document.getElementById('reviewText').value;
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = 'Analyzing...';
+
+      try {
+        const response = await fetch('/predict', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ review: review }),
+        });
+
+        const data = await response.json();
+        resultDiv.innerHTML = `Sentiment: <span style="color:${data.sentiment === 'Positive' ? 'green' : 'red'}">${data.sentiment}</span>`;
+      } catch (error) {
+        resultDiv.innerHTML = 'Error analyzing sentiment.';
+        console.error('Error:', error);
+      }
+    }
+  </script>
+</body>
+</html>
